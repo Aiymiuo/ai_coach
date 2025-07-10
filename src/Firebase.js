@@ -5,13 +5,13 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDC8Zv2zPsdl81ghkJGlwQBI08F9gDxbGQ",
-  authDomain: "ai-coach---startups.firebaseapp.com",
-  projectId: "ai-coach---startups",
-  storageBucket: "ai-coach---startups.firebasestorage.app",
-  messagingSenderId: "735256710905",
-  appId: "1:735256710905:web:59929833d7d366ffb25c28",
-  measurementId: "G-3X6MNKEWFH"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 const app = initializeApp(firebaseConfig);
