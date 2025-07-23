@@ -11,9 +11,9 @@ import Risk from './Risk';
 import Login from './Login';
 import Signup from './Signup';
 import './App.css';
-import Chat from './Ai_chat';
-import './Ai_chat.module.css';
-import Ai_chat from './Ai_chat';
+import Chat from './Chat';
+import './Chatu.css';
+
 
 
 function App() {
@@ -52,7 +52,7 @@ function App() {
                 <Route path="/planning" element={<ProtectedRoute><Planning /></ProtectedRoute>} />
                 <Route path="/motivation" element={<ProtectedRoute><Motivation /></ProtectedRoute>} />
                 <Route path="/risk" element={<ProtectedRoute><Risk /></ProtectedRoute>} />
-                 <Route path="/chat" element={<ProtectedRoute><Ai_chat /></ProtectedRoute>} />
+                 <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
             </Routes>
         </div>
     );
@@ -62,7 +62,7 @@ function Home() {
     return (
         <div>
             <h3>Welcome to your AI Startup Coach! 🚀</h3>
-            <p>Sign up or log in to start using planning, motivation, and risk management tools.</p>
+            <h3>Sign up or log in to start using planning, motivation, and risk management tools.</h3>
         </div>
     );
 }

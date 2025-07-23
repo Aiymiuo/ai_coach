@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { db } from './Firebase';
+import { db } from './Firebase.js';
 import { collection, addDoc, serverTimestamp, onSnapshot } from 'firebase/firestore';
 import './App.css'; // Your existing CSS file
 import { useAuth } from "./AuthContext.jsx";
-import styles from './Ai_chat.module.css';
+import './Chatu.css';
 
-function Ai_chat({ currentUser }) {
+function Chat({ currentUser }) {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
 
@@ -33,7 +33,7 @@ function Ai_chat({ currentUser }) {
         });
         setNewMessage('');
     };
-
+ 
     return (
         <div className="chat-container">
             <h3>Team Chat</h3>
@@ -62,4 +62,4 @@ function Ai_chat({ currentUser }) {
     );
 }
 
-export default Ai_chat;
+export default Chat;
