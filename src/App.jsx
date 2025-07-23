@@ -11,6 +11,9 @@ import Risk from './Risk';
 import Login from './Login';
 import Signup from './Signup';
 import './App.css';
+import Chat from './Ai_chat';
+import './Ai_chat.module.css';
+import Ai_chat from './Ai_chat';
 
 
 function App() {
@@ -36,6 +39,7 @@ function App() {
                         <button><Link to="/planning">Planning</Link></button>
                         <button><Link to="/motivation">Motivation</Link></button>
                         <button><Link to="/risk">Risk</Link></button>
+                        <button><Link to="/chat">AI Chat Bot</Link></button>
                     </>
                 )}
             </nav>
@@ -48,6 +52,7 @@ function App() {
                 <Route path="/planning" element={<ProtectedRoute><Planning /></ProtectedRoute>} />
                 <Route path="/motivation" element={<ProtectedRoute><Motivation /></ProtectedRoute>} />
                 <Route path="/risk" element={<ProtectedRoute><Risk /></ProtectedRoute>} />
+                 <Route path="/chat" element={<ProtectedRoute><Ai_chat /></ProtectedRoute>} />
             </Routes>
         </div>
     );
