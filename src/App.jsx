@@ -1,3 +1,4 @@
+// src/Dashboard.jsx
 // src/App.jsx
 
 import React from 'react';
@@ -13,7 +14,8 @@ import Signup from './Signup';
 import './App.css';
 import Chat from './Chat';
 import './Chatu.css';
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function App() {
@@ -24,6 +26,7 @@ function App() {
     return (
         <div>
             <h2>AI Team Management App</h2>
+            <ToastContainer/>
 
             <nav style={{ marginBottom: '16px' }}>
                 <button><Link to="/">Home</Link></button>
@@ -52,7 +55,7 @@ function App() {
                 <Route path="/planning" element={<ProtectedRoute><Planning /></ProtectedRoute>} />
                 <Route path="/motivation" element={<ProtectedRoute><Motivation /></ProtectedRoute>} />
                 <Route path="/risk" element={<ProtectedRoute><Risk /></ProtectedRoute>} />
-                 <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+                <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
             </Routes>
         </div>
     );
@@ -68,5 +71,3 @@ function Home() {
 }
 
 export default App;
-
-
