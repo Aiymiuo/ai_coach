@@ -22,6 +22,7 @@ function Planning() {
     const [responsible, setResponsible] = useState("");
     const [showConfetti, setShowConfetti] = useState(false);
     const { width, height } = useWindowSize();
+    const tasksRef = collection(db, "Teams", teamName, "Tasks");
 
     const difficultyPoints = {
         Easy: 5,
