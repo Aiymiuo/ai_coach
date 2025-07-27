@@ -21,7 +21,7 @@ const Bot = () => {
     if (!currentUser) return;
 
     const q = query(
-      collection(db, 'ai-messages'),
+      collection(db, 'bot-messages'),
       where('userId', '==', currentUser.uid)
     );
 
@@ -45,13 +45,13 @@ const Bot = () => {
 
     const aiMsg = {
       text: generateAIResponse(input),
-      sender: 'ai',
+      sender: 'AI Bot',
       createdAt: serverTimestamp(),
       userId: currentUser.uid
     };
 
-    await addDoc(collection(db, 'ai-messages'), userMsg);
-    await addDoc(collection(db, 'ai-messages'), aiMsg);
+    await addDoc(collection(db, 'bot-messages'), userMsg);
+    await addDoc(collection(db, 'bot-messages'), aiMsg);
 
     setInput('');
   };
@@ -84,7 +84,14 @@ const Bot = () => {
           className="ai-input"
         />
         <button onClick={sendMessage} className="ai-send-btn">Send</button>
-      </div>
+     </div>
+    <div class="chat-message ai-message">
+    <div class="profile-pic">
+    <img src="/avatar.jpeg" alt="AI" />
+  </div>
+  <div class="message-content">
+  </div>
+</div>
     </div>
   );
 };
