@@ -14,6 +14,7 @@ import './App.css';
 import Chat from './Chat';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Bot from './Bot';
 
 
 function App() {
@@ -40,7 +41,8 @@ function App() {
                         <button><Link to="/planning">Planning</Link></button>
                         <button><Link to="/motivation">Motivation</Link></button>
                         <button><Link to="/risk">Risk</Link></button>
-                        <button><Link to="/chat">AI Chat Bot</Link></button>
+                        <button><Link to="/chat">Team Chat</Link></button>
+                        <button><Link to="/bot">AI Chat Bot</Link></button>
                     </>
                 )}
             </nav>
@@ -54,6 +56,7 @@ function App() {
                 <Route path="/motivation" element={<ProtectedRoute><Motivation /></ProtectedRoute>} />
                 <Route path="/risk" element={<ProtectedRoute><Risk /></ProtectedRoute>} />
                 <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+                <Route path="/bot" element={<ProtectedRoute><Bot /></ProtectedRoute>} />
             </Routes>
         </div>
     );
