@@ -85,11 +85,10 @@ const Bot = () => {
         />
         <button onClick={sendMessage} className="ai-send-btn">Send</button>
      </div>
-    <div class="chat-message ai-message">
-    <div class="profile-pic">
-    <img src="/avatar.jpeg" alt="AI" />
-  </div>
-  <div class="message-content">
+    <div className="ai-message chat-message">
+  <img className="profile-pic" src="/avatar.jpeg" alt="AI Avatar" />
+  <div className="message-content">
+    <div className="message-text">{generateAIResponse}</div>
   </div>
 </div>
     </div>

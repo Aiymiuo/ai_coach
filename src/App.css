@@ -223,30 +223,24 @@ nav button {
 .chat-message {
   display: flex;
   align-items: flex-start;
-  margin: 12px 0;
+  margin: 10px 0;
 }
 
 .profile-pic {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
   margin-right: 10px;
-  flex-shrink: 0;
-}
-
-.profile-pic img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%; /* Makes it circular */
-  object-fit: cover;
-  border: 2px solid #ccc;
 }
 
 .message-content {
-  background-color: #f0f4ff;
-  color: #333;
+  background-color: #f0f0f0;
   padding: 10px 14px;
-  border-radius: 10px;
-  max-width: 75%;
+  border-radius: 12px;
+  max-width: 70%;
+}
+
+.message-text {
   font-size: 14px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  color: #333;
 }
