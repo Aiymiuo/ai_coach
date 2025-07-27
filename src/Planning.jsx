@@ -35,6 +35,8 @@ function Planning() {
         if (!taskInput.trim()) return;
 
         try {
+            const userId = currentUser.uid;
+            const taskCollection = collection (db, "Participants", userId, "Tasks");
             await addDoc(collection(db, "Tasks"), {
                 text: taskInput,
                 difficulty: difficulty,
@@ -44,9 +46,9 @@ function Planning() {
             });
 
             setTaskInput("");
-            setDifficulty("easy");
         } catch (error) {
             console.error("Error adding task:", error);
+            alert("Failed to add task.")
         }
     };
 
