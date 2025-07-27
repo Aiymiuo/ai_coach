@@ -16,7 +16,6 @@ function Planning() {
     const [difficulty, setDifficulty] = useState("easy");
     const [tasks, setTasks] = useState([]);
     const [showConfetti, setShowConfetti] = useState(false);
-    const { width, height } = useWindowSize();
 
 
     useEffect(() => {
