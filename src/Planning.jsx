@@ -11,6 +11,7 @@ import {
 import { useAuth } from "./AuthContext.jsx";
 import './App.css';
 import { useWindowSize } from "react-use";
+import Confetti from "react-confetti"
 
 function Planning() {
     const { currentUser } = useAuth();
@@ -83,7 +84,8 @@ function Planning() {
             console.error("Failed to update status:", error);
         }
     };
-
+    {showConfetti && <Confetti width={width} height={height} />}
+    
     // Calculate total points
     const totalPoints = tasks.reduce((sum, task) => {
         if (task.status === "Completed") {
