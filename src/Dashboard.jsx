@@ -129,29 +129,7 @@ function Dashboard() {
                                     border: "1px solid #ddd"
                                 }}
                             />
-                            <button
-                                onClick={() => {
-                                    if (!newTaskName.trim()) return;
-                                    const currentUser = userData.find(user => user.email === loggedInEmail);
-                                    if (currentUser) {
-                                        completeTask(currentUser.id, newTaskName);
-                                    }
-                                }}
-                                style={{
-                                    padding: "8px 16px",
-                                    background: "#4CAF50",
-                                    color: "white",
-                                    border: "none",
-                                    borderRadius: "4px",
-                                    cursor: "pointer"
-                                }}
-                            >
-                                Mark Complete (+10pts)
-                            </button>
                         </div>
-                        <small style={{ color: "#666" }}>
-                            Each task can only be completed once per user
-                        </small>
                     </div>
                 </>
             )}

@@ -1,4 +1,3 @@
-// src/Dashboard.jsx
 // src/App.jsx
 
 import React from 'react';
@@ -13,7 +12,6 @@ import Login from './Login';
 import Signup from './Signup';
 import './App.css';
 import Chat from './Chat';
-import './Chatu.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
