@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore";
 import { useAuth } from "./AuthContext.jsx";
 import './App.css';
+import { useWindowSize } from "react-use";
 
 function Planning() {
     const { currentUser } = useAuth();
@@ -17,6 +18,8 @@ function Planning() {
     const [difficulty, setDifficulty] = useState("Easy");
     const [tasks, setTasks] = useState([]);
     const userId = currentUser?.uid;
+    const [showConfetti, setShowConfetti ]=useState(false);
+    const { width, height }= useWindowSize();
 
     // Points per difficulty
     const difficultyPoints = {
@@ -72,6 +75,9 @@ function Planning() {
 
             if (newStatus === "Completed") {
                 playSuccessSound();
+                setShowConfetti(true);
+                setTimeout(() =>
+            setShowConfetti(false), 3000);
             }
         } catch (error) {
             console.error("Failed to update status:", error);
