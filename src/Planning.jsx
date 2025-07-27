@@ -11,52 +11,48 @@ import {
 import { useAuth } from "./AuthContext.jsx";
 import './App.css';
 import { useWindowSize } from "react-use";
-import Confetti from "react-confetti"
+import Confetti from "react-confetti";
 
 function Planning() {
     const { currentUser } = useAuth();
     const [taskInput, setTaskInput] = useState("");
     const [difficulty, setDifficulty] = useState("Easy");
     const [tasks, setTasks] = useState([]);
-    const userId = currentUser?.uid;
-    const [showConfetti, setShowConfetti ]=useState(false);
-    const { width, height }= useWindowSize();
+    const [teamId, setTeamId] = useState(null);
+    const [responsible, setResponsible] = useState("");
+    const [showConfetti, setShowConfetti] = useState(false);
+    const { width, height } = useWindowSize();
 
-    // Points per difficulty
     const difficultyPoints = {
         Easy: 5,
         Medium: 10,
         Hard: 20,
     };
 
-    // Play success sound
     const playSuccessSound = () => {
         const audio = new Audio("/coin-sound.wav");
         audio.play();
     };
 
-    // Add new task
-    const addTask = async () => {
-        if (!taskInput.trim()) return;
-
-        try {
-            const tasksCollection = collection(db, "Participants", userId, "Tasks");
-            await addDoc(tasksCollection, {
-                text: taskInput.trim(),
-                difficulty,
-                status: "Not Started",
-            });
-            setTaskInput("");
-        } catch (error) {
-            console.error("Failed to add task:", error);
-        }
-    };
-
-    // Load tasks in real time
+    // Get user's teamId from Firestore
     useEffect(() => {
-        if (!userId) return;
+        const fetchTeamId = async () => {
+            if (!currentUser) return;
+            const userRef = doc(db, "Participants", currentUser.uid);
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+                const data = userSnap.data();
+                setTeamId(data.teamId);
+            }
+        };
+        fetchTeamId();
+    }, [currentUser]);
 
-        const tasksCollection = collection(db, "Participants", userId, "Tasks");
+    // Load tasks from team's collection
+    useEffect(() => {
+        if (!teamId) return;
+
+        const tasksCollection = collection(db, "Teams", teamId, "Tasks");
         const unsubscribe = onSnapshot(tasksCollection, (snapshot) => {
             const loadedTasks = snapshot.docs.map(doc => ({
                 id: doc.id,
@@ -66,27 +62,46 @@ function Planning() {
         });
 
         return () => unsubscribe();
-    }, [userId]);
+    }, [teamId]);
 
-    // Update status (and play sound if Completed)
-    const updateStatus = async (taskId, newStatus) => {
+    const addTask = async () => {
+        if (!taskInput.trim()  
+        )!responsible.trim()  
+        !teamId?.trim() 
+        return;
+
         try {
-            const taskRef = doc(db, "Participants", userId, "Tasks", taskId);
+            const tasksCollection = collection(db, "Teams", teamId, "Tasks");
+            await addDoc(tasksCollection, {
+                text: taskInput.trim(),
+                difficulty,
+                responsible: responsible.trim(),
+                status: "Not Started",
+            });
+            setTaskInput("");
+            setResponsible("");
+        } catch (error) {
+            console.error("Failed to add task:", error);
+        }
+    };
+
+    const updateStatus = async (taskId, newStatus) => {
+        if (!teamId) return;
+
+        try {
+            const taskRef = doc(db, "Teams", teamId, "Tasks", taskId);
             await updateDoc(taskRef, { status: newStatus });
 
             if (newStatus === "Completed") {
                 playSuccessSound();
                 setShowConfetti(true);
-                setTimeout(() =>
-            setShowConfetti(false), 3000);
+                setTimeout(() => setShowConfetti(false), 3000);
             }
         } catch (error) {
             console.error("Failed to update status:", error);
         }
     };
-    {showConfetti && <Confetti width={width} height={height} />}
-    
-    // Calculate total points
+
     const totalPoints = tasks.reduce((sum, task) => {
         if (task.status === "Completed") {
             return sum + (difficultyPoints[task.difficulty] || 0);
@@ -106,6 +121,13 @@ function Planning() {
                     placeholder="Enter task"
                     className="task-input"
                 />
+                <input
+                    type="text"
+                    value={responsible}
+                    onChange={(e) => setResponsible(e.target.value)}
+                    placeholder="Responsible person"
+                    className="task-input"
+                />
                 <select
                     value={difficulty}
                     onChange={(e) => setDifficulty(e.target.value)}
@@ -120,14 +142,17 @@ function Planning() {
 
             <h3>Total Points Earned: {totalPoints}</h3>
 
+            {showConfetti && <Confetti width={width} height={height} />}
+
             <ul className="task-list">
                 {tasks.map(task => (
                     <li key={task.id} className="task-item">
-                        <span>{task.text}</span> — <strong>{task.difficulty}</strong>
+                        <span>{task.text}</span> — <strong>{task.difficulty}</strong> — 
+                        <em>{task.responsible}</em>
                         <select
                             value={task.status}
                             onChange={(e) => updateStatus(task.id, e.target.value)}
-className="status-select"
+                            className="status-select"
                         >
                             <option value="Not Started">Not Started</option>
                             <option value="In Progress">In Progress</option>
