@@ -15,6 +15,9 @@ function Planning() {
     const [taskInput, setTaskInput] = useState("");
     const [difficulty, setDifficulty] = useState("easy");
     const [tasks, setTasks] = useState([]);
+    const [showConfetti, setShowConfetti] = useState(false);
+    const { width, height } = useWindowSize();
+
 
     useEffect(() => {
         if (!currentUser) return;
@@ -51,8 +54,37 @@ function Planning() {
             alert("Failed to add task.")
         }
     };
+// Play coin sound
+    const playCoinSound = () => {
+        const audio = new Audio('/coin-sound.wav'); // Ensure this file is in your public directory
+        audio.play().catch(err => console.error("Sound error:", err));
+    };
+
 
     const updateStatus = async (taskId, newStatus) => {
+        if (!currentUser) return;
+
+        const taskDoc = doc(db, "users", currentUser.uid, "planningTasks", id);
+
+        if (currentStatus !== "Completed" && newStatus === "Completed") {
+            const earnedPoints = scoring[taskDifficulty] || 0;
+            const userDocRef = doc(db, "users", currentUser.uid);
+            const userDocSnap = await getDoc(userDocRef);
+            let currentPoints = 0;
+            if (userDocSnap.exists()) {
+                currentPoints = userDocSnap.data().points || 0;
+            }
+
+            await updateDoc(userDocRef, {
+                points: currentPoints + earnedPoints
+            });
+
+            setPoints(currentPoints + earnedPoints);
+            playCoinSound();
+            setShowConfetti(true);
+            setTimeout(() => setShowConfetti(false), 3000);
+        }
+
         try {
             const taskRef = doc(db, "Tasks", taskId);
             await updateDoc(taskRef, {
@@ -64,7 +96,8 @@ function Planning() {
     };
 
     return (
-        <div className="planning-container">
+        <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px", textAlign: "center" }}>
+            {showConfetti && <Confetti width={width} height={height} />}
             <h2>Planning</h2>
 
             <div className="task-input-container">
