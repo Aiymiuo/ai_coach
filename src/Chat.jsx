@@ -27,14 +27,13 @@ function Chat() {
             }));
             setMessages(chatMessages);
             scrollToBottom();
-            
-            // Show notifications for new messages
+
             snapshot.docChanges().forEach(change => {
-                if (change.type === 'added' && 
-                    change.doc.data().sender !== currentUser.email) {
-                    toast.info(`New message from ${change.doc.data().sender}`);
-                }
-            });
+    const sender = change.doc.data().sender || "Unknown";
+    if (change.type === 'added' && sender !== currentUser.email) {
+        toast.info('New message from $ {sender}');
+    }
+});
         });
 
         return () => unsubscribe();
@@ -48,13 +47,14 @@ function Chat() {
         e.preventDefault();
         if (!newMessage.trim()) return;
 
+        const team = currentUser?.teamName || "unknown_team"; // Fallback if undefined
+
         try {
             await addDoc(collection(db, 'teamChats'), {
                 text: newMessage,
                 sender: currentUser.email,
-                team: currentUser.teamName,
+                team: team,
                 timestamp: serverTimestamp(),
-                isAI: false
             });
             setNewMessage('');
         } catch (error) {
@@ -62,8 +62,7 @@ function Chat() {
             console.error("Send error:", error);
         }
     };
-
-    return (
+return (
         <div className="chat-container">
             <ToastContainer position="bottom-right" autoClose={3000} />
             
