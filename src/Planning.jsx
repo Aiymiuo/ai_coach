@@ -111,9 +111,9 @@ function Planning() {
                     onChange={(e) => setDifficulty(e.target.value)}
                     className="difficulty-select"
                 >
-                    <option value="Easy">Easy</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Hard">Hard</option>
+                    <option value="Easy">Easy⭐</option>
+                    <option value="Medium">Medium⭐⭐</option>
+                    <option value="Hard">Hard⭐⭐⭐</option>
                 </select>
                 <button onClick={addTask} className="add-button">Add Task</button>
             </div>

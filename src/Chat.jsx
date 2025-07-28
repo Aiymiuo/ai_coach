@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from './Firebase';
 import { collection, addDoc, serverTimestamp, onSnapshot, query, orderBy } from 'firebase/firestore';
-import { useAuth } from "./AuthContext.jsx";
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAuth } from "./AuthContext.jsx";
+import './App.css';
 
 function Chat() {
     const { currentUser } = useAuth();
@@ -11,44 +12,32 @@ function Chat() {
     const [newMessage, setNewMessage] = useState('');
     const messagesEndRef = useRef(null);
 
-    // Debug: Log current user
+    // Load messages from Firebase
     useEffect(() => {
-        console.log("Current user:", currentUser);
-    }, [currentUser]);
-
-    useEffect(() => {
-        if (!currentUser) {
-            console.log("No current user, skipping chat init");
-            return;
-        }
-
-        console.log("Initializing chat listener...");
         const q = query(
-            collection(db, teamName, "Chat"),
+            collection(db, 'teamChats'),
             orderBy('timestamp', 'asc')
         );
 
-        const unsubscribe = onSnapshot(q, 
-            (snapshot) => {
-                console.log(`Received ${snapshot.docs.length} messages`);
-                const chatMessages = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data(),
-                    timestamp: doc.data().timestamp?.toDate()
-                }));
-                setMessages(snapshot.docs.map(doc =>doc.data()));
-                scrollToBottom();
-            },
-            (error) => {
-                console.error("Snapshot error:", error);
-                toast.error("Failed to load messages");
-            }
-        );
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const chatMessages = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+                timestamp: doc.data().timestamp?.toDate()
+            }));
+            setMessages(chatMessages);
+            scrollToBottom();
+            
+            // Show notifications for new messages
+            snapshot.docChanges().forEach(change => {
+                if (change.type === 'added' && 
+                    change.doc.data().sender !== currentUser.email) {
+                    toast.info(`New message from ${change.doc.data().sender}`);
+                }
+            });
+        });
 
-        return () => {
-            console.log("Cleaning up chat listener");
-            unsubscribe();
-        };
+        return () => unsubscribe();
     }, [currentUser]);
 
     const scrollToBottom = () => {
@@ -57,70 +46,36 @@ function Chat() {
 
     const sendMessage = async (e) => {
         e.preventDefault();
-        
-        console.log("Attempting to send message:", newMessage);
-        
-        if (!newMessage.trim()) {
-            toast.warning("Message cannot be empty");
-            return;
-        }
-
-        if (!currentUser?.email) {
-            toast.error("You must be logged in");
-            return;
-        }
+        if (!newMessage.trim()) return;
 
         try {
-            console.log("Creating message document...");
-            const messageData = {
+            await addDoc(collection(db, 'teamChats'), {
                 text: newMessage,
                 sender: currentUser.email,
-                team: currentUser.teamName || 'general',
-                timestamp: serverTimestamp()
-            };
-            
-            console.log("Message data:", messageData);
-            
-            const docRef = await addDoc(collection(db, 'teamChats'), messageData);
-            console.log("Message sent with ID:", docRef.id);
-            
-            const sendMessage = async (e) => {
-  e.preventDefault();
-  
-  console.log("Firestore instance:", db); // Should show Firestore object
-  console.log("Current user:", auth.currentUser); // Should show user object
-  
-  try {
-    const testRef = await addDoc(collection(db, 'test_collection'), {
-      test: "Connection test",
-      timestamp: serverTimestamp()
-    });
-    console.log("Test write successful!", testRef.id);
-  } catch (error) {
-    console.error("Test write failed:", error);
-  }
-};
-
+                team: currentUser.teamName,
+                timestamp: serverTimestamp(),
+                isAI: false
+            });
             setNewMessage('');
         } catch (error) {
-            console.error("Full send error:", {
-                code: error.code,
-                message: error.message,
-                stack: error.stack,
-                user: currentUser,
-                time: new Date().toISOString()
-            });
-            toast.error(`Send failed: ${error.message}`);
+            toast.error("Failed to send message");
+            console.error("Send error:", error);
         }
     };
 
     return (
         <div className="chat-container">
+            <ToastContainer position="bottom-right" autoClose={3000} />
+            
             <h3>Team Chat</h3>
+            
             <div className="messages-container">
                 {messages.map(msg => (
-                    <div key={msg.id} className={`message ${msg.sender === currentUser?.email ? 'sent' : 'received'}`}>
-                        <span className="sender">{msg.sender.split('@')[0]}:</span>
+                    <div 
+                        key={msg.id} 
+                        className={`message ${msg.sender === currentUser.email ? 'sent' : 'received'}`}
+                    >
+                        <span className="sender">{msg.sender}:</span>
                         <p>{msg.text}</p>
                         <small>
                             {msg.timestamp?.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
@@ -136,14 +91,8 @@ function Chat() {
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Type your message..."
-                    disabled={!currentUser}
                 />
-                <button 
-                    type="submit"
-                    disabled={!currentUser || !newMessage.trim()}
-                >
-                    Send
-                </button>
+                <button type="submit">Send</button>
             </form>
         </div>
     );
