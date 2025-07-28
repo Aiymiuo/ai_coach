@@ -22,11 +22,8 @@ function Signup() {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-        await setDoc(doc(db, "Users", user.uid), {
-             email: user.email,
-             teamName: inputTeamName
-});
-            // Save teamName and score to Firestore user document
+
+            // Save user data to Firestore
             await setDoc(doc(db, "users", user.uid), {
                 email: user.email,
                 teamName: teamName.trim(),
